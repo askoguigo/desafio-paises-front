@@ -8,50 +8,55 @@ export function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Buscando os dados da API
-            axios.get('https://restcountries.com/v3.1/all?fields=name,flags,population,region,subregion,capital,cca3')
-  .         then(response => {
-            setCountries(response.data);
-            setLoading(false);
-             })
-      .catch(error => {
-        console.error("Erro ao carregar países:", error);
+    axios.get('https://restcountries.com/v3.1/all?fields=name,flags,population,region,cca3')
+      .then(response => {
+        setCountries(response.data);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  // Lógica de busca por nome
   const filteredCountries = countries.filter(country =>
     country.name.common.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '50px' }}>Carregando países...</h2>;
+  if (loading) return <h2 style={{ textAlign: 'center', marginTop: '50px' }}>Carregando...</h2>;
 
   return (
     <div style={{ padding: '20px' }}>
-      {/* Campo de Busca */}
-      <input 
-        type="text" 
-        placeholder="Pesquisar país pelo nome..." 
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ 
-          width: '100%', 
-          padding: '15px', 
-          marginBottom: '30px', 
-          borderRadius: '8px', 
-          border: '1px solid #ccc',
-          fontSize: '16px'
-        }}
-      />
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        width: '100%', 
+        marginBottom: '30px',
+        padding: '0 10px',
+        boxSizing: 'border-box'
+      }}>
+        <input 
+          type="text" 
+          placeholder="Pesquisar país pelo nome..." 
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ 
+            width: '100%', 
+            maxWidth: '500px', 
+            padding: '15px', 
+            borderRadius: '8px', 
+            border: '1px solid #ccc',
+            fontSize: '16px',
+            outline: 'none',
+            boxSizing: 'border-box'
+          }}
+        />
+      </div>
 
-      {/* Grid de Cartões */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-        gap: '25px' 
+        gap: '25px',
+        justifyContent: 'center'
       }}>
-        {filteredCountries.map((country: any) => (
+        {filteredCountries.map((country) => (
           <Link 
             to={`/details/${country.cca3}`} 
             key={country.cca3} 
@@ -61,17 +66,17 @@ export function Home() {
               border: '1px solid #eee', 
               borderRadius: '15px', 
               overflow: 'hidden',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-              background: '#fff'
+              background: '#fff',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
             }}
           >
             <img 
               src={country.flags.svg} 
-              alt={country.name.common} 
+              alt="" 
               style={{ width: '100%', height: '160px', objectFit: 'cover' }} 
             />
             <div style={{ padding: '15px' }}>
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>{country.name.common}</h3>
+              <h3 style={{ margin: '0 0 10px 0' }}>{country.name.common}</h3>
               <p style={{ margin: '5px 0' }}><strong>População:</strong> {country.population.toLocaleString()}</p>
               <p style={{ margin: '5px 0' }}><strong>Continente:</strong> {country.region}</p>
             </div>
